@@ -11,8 +11,8 @@ public class MedianOfTwoSortedArrays {
 
 	public static void main(String[] args) {
 		Solution solution = new MedianOfTwoSortedArrays().new Solution();
-		int[] arrayOne = new int[]{1, 3, 4, 5, 6};
-		int[] arrayTwo = new int[]{3, 4, 5, 6, 7, 8};
+		int[] arrayOne = new int[]{1};
+		int[] arrayTwo = new int[]{};
 		System.out.println(solution.findMedianSortedArrays(arrayOne, arrayTwo));
 	}
 
@@ -22,31 +22,49 @@ public class MedianOfTwoSortedArrays {
 		public double findMedianSortedArrays(int[] nums1, int[] nums2) {
 			int lengthOne = nums1.length;
 			int lengthTwo = nums2.length;
-			// 处理一个数组长度为0的边界情况
-			if (lengthOne == 0) {
-				if (lengthTwo % 2 == 1) {
-					int midIndex = lengthTwo / 2;
-					return nums2[midIndex];
-				} else {
-					int midOne = lengthTwo / 2 - 1;
-					int midTwo = lengthTwo / 2;
-					return (nums2[midOne] + nums2[midTwo]) / 2;
-				}
-			}
-			if (lengthTwo == 0) {
-				if (lengthOne % 2 == 1) {
-					int midIndex = lengthOne / 2;
-					return nums1[midIndex];
-				} else {
-					int midOne = lengthOne / 2 - 1;
-					int midTwo = lengthOne / 2;
-					return (nums1[midOne] + nums1[midTwo]) / 2;
-				}
-			}
 			int totalLength = lengthOne + lengthTwo;
+			int mid = totalLength / 2;
+			if (totalLength % 2 == 1) {
+				return findKth(nums1, nums2, mid, 0, lengthOne - 1, 0, lengthTwo -1);
+			} else {
+				double one = findKth(nums1, nums2, mid, 0, lengthOne - 1, 0, lengthTwo -1);
+				double two = findKth(nums1, nums2, mid - 1, 0, lengthOne - 1, 0, lengthTwo -1);
+				return (one + two) / 2;
+			}
+		}
 
+		private int findKth(int A[], int B[], int k,
+							int aStart, int aEnd, int bStart, int bEnd) {
 
-			return 0;
+			int aLen = aEnd - aStart + 1;
+			int bLen = bEnd - bStart + 1;
+
+			// Handle special cases
+			if (aLen == 0)
+				return B[bStart + k];
+			if (bLen == 0)
+				return A[aStart + k];
+			if (k == 0)
+				return A[aStart] < B[bStart] ? A[aStart] : B[bStart];
+
+			int aMid = aLen * k / (aLen + bLen); // a's middle count
+			int bMid = k - aMid - 1; // b's middle count
+
+			// make aMid and bMid to be array index
+			aMid = aMid + aStart;
+			bMid = bMid + bStart;
+
+			if (A[aMid] > B[bMid]) {
+				k = k - (bMid - bStart + 1);
+				aEnd = aMid;
+				bStart = bMid + 1;
+			} else {
+				k = k - (aMid - aStart + 1);
+				bEnd = bMid;
+				aStart = aMid + 1;
+			}
+
+			return findKth(A, B, k, aStart, aEnd, bStart, bEnd);
 		}
 	}
 }
