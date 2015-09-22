@@ -39,7 +39,6 @@ public class MedianOfTwoSortedArrays {
 			int aLen = aEnd - aStart + 1;
 			int bLen = bEnd - bStart + 1;
 
-			// Handle special cases
 			if (aLen == 0)
 				return B[bStart + k];
 			if (bLen == 0)
@@ -47,10 +46,9 @@ public class MedianOfTwoSortedArrays {
 			if (k == 0)
 				return A[aStart] < B[bStart] ? A[aStart] : B[bStart];
 
-			int aMid = aLen * k / (aLen + bLen); // a's middle count
-			int bMid = k - aMid - 1; // b's middle count
+			int aMid = aLen * k / (aLen + bLen);
+			int bMid = k - aMid - 1;
 
-			// make aMid and bMid to be array index
 			aMid = aMid + aStart;
 			bMid = bMid + bStart;
 
