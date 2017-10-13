@@ -1,4 +1,4 @@
-package com.coderli.leetcode.algorithms;
+package com.coderli.leetcode.algorithms.easy;
 
 import java.util.HashMap;
 import java.util.Map;

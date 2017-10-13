@@ -1,4 +1,4 @@
-package com.coderli.leetcode.algorithms;
+package com.coderli.leetcode.algorithms.easy;
 
 /**
  * Determine whether an integer is a palindrome. Do this without extra space.

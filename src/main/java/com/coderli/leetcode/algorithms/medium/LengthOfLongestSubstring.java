@@ -1,4 +1,4 @@
-package com.coderli.leetcode.algorithms;
+package com.coderli.leetcode.algorithms.medium;
 
 /**
  * Given a string, find the length of the longest substring without repeating characters.

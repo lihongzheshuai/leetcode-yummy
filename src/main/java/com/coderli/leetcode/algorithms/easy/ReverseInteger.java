@@ -1,4 +1,4 @@
-package com.coderli.leetcode.algorithms;
+package com.coderli.leetcode.algorithms.easy;
 
 /**
  * Reverse digits of an integer.
