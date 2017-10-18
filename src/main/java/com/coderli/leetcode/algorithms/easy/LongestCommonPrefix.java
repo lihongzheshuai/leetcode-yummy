@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * Write a function to find the longest common prefix string amongst an array of strings.
  *
- * @author li.hzh
+ * @author li.hzh 2017-10-17
  */
 public class LongestCommonPrefix {
 
