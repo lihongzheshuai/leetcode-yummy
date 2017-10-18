@@ -5,7 +5,7 @@ package com.coderli.leetcode.algorithms.easy;
  * <p>
  * The brackets must close in the correct order, "()" and "()[]{}" are all valid but "(]" and "([)]" are not.
  *
- * @author li.hzh 2017-10-18s
+ * @author li.hzh 2017-10-18
  */
 public class ValidParentheses {
 
