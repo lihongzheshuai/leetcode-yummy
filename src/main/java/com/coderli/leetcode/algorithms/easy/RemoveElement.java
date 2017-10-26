@@ -12,7 +12,7 @@ package com.coderli.leetcode.algorithms.easy;
  * <p>
  * Your function should return length = 2, with the first two elements of nums being 2.
  *
- * @author 2017-10-26
+ * @author li.hzh 2017-10-26
  */
 public class RemoveElement {
 
