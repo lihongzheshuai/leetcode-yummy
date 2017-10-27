@@ -10,21 +10,37 @@ package com.coderli.leetcode.algorithms.easy;
 public class ImplementStrStr {
     
     public static void main(String[] args) {
-    
+        ImplementStrStr implementStrStr = new ImplementStrStr();
+        System.out.println(implementStrStr.strStr("abba","ba"));
+        System.out.println(implementStrStr.strStr("mississipps","issip"));
     }
     
     public int strStr(String haystack, String needle) {
-        if (needle == null || haystack == null || needle.length() == 0) {
+        if (needle.length() == 0) {
+            return 0;
+        }
+        if (needle.length() > haystack.length()) {
             return -1;
         }
-        int needleIndex = 0;
-        int result = -1;
+        int haystackIndex = 0;
         for (int i = 0; i < haystack.length(); i++) {
-            if (needle.charAt(needleIndex) == haystack.charAt(i)) {
-                needleIndex++;
-                result = i;
+            if (needle.charAt(0) == haystack.charAt(i)) {
+                haystackIndex = i;
+                if (i + needle.length() > haystack.length()) {
+                    return -1;
+                }
+                boolean found = true;
+                for (int j = 1; j < needle.length(); j++) {
+                    if (needle.charAt(j) != haystack.charAt(haystackIndex + j)) {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found) {
+                    return haystackIndex;
+                }
             }
         }
-        return result;
+        return -1;
     }
 }
