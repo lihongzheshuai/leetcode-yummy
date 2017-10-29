@@ -11,8 +11,44 @@ public class ImplementStrStr {
     
     public static void main(String[] args) {
         ImplementStrStr implementStrStr = new ImplementStrStr();
-        System.out.println(implementStrStr.strStr("abba","ba"));
-        System.out.println(implementStrStr.strStr("mississipps","issip"));
+        System.out.println(implementStrStr.strStr("abba", "ba"));
+        System.out.println(implementStrStr.strStrLikeString("mississipps", "issip"));
+        System.out.println(implementStrStr.strStrLikeString("aaaaaaa", "aaaaab"));
+    }
+    
+    /**
+     * 模仿String里的indexOf的实现方式
+     *
+     * @param haystack
+     * @param needle
+     * @return
+     */
+    private int strStrLikeString(String haystack, String needle) {
+        int targetLength = needle.length();
+        int sourceLength = haystack.length();
+        if (targetLength == 0) {
+            return 0;
+        }
+        if (targetLength > sourceLength) {
+            return -1;
+        }
+        for (int i = 0; i < sourceLength; i++) {
+            if (haystack.charAt(i) != needle.charAt(0)) {
+                while (++i < sourceLength && haystack.charAt(i) != needle.charAt(0)) ;
+            }
+            if (i + targetLength - 1 < sourceLength) {
+                // 代表找到第一个可能元素
+                int needleIndex = 1;
+                for (int j = i + 1; needleIndex < targetLength &&
+                                            needle.charAt(needleIndex) == haystack.charAt(j); needleIndex++, j++)
+                    ;
+                
+                if (needleIndex == targetLength) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
     
     public int strStr(String haystack, String needle) {
