@@ -25,10 +25,14 @@ public class MaximumSubarray {
         int maxResult = nums[0];
         int tempSum = maxResult;
         for (int i = 1; i < nums.length; i++) {
-            tempSum = tempSum + nums[i];
-            tempSum = Math.max(tempSum, nums[i]);
-            maxResult = Math.max(tempSum, maxResult);
-
+            if (tempSum <= 0) {
+                tempSum = nums[i];
+            } else {
+                tempSum = tempSum + nums[i];
+            }
+            if (tempSum > maxResult) {
+                maxResult = tempSum;
+            }
         }
         return maxResult;
     }
