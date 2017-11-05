@@ -16,6 +16,10 @@ public class MaximumSubarray {
         System.out.println(maximumSubarray.maxSubArray(new int[]{-2, -1}));
         System.out.println(maximumSubarray.maxSubArray(new int[]{1, -3, 2}));
         System.out.println(maximumSubarray.maxSubArray(new int[]{1, -1, -2, 2}));
+        System.out.println(maximumSubarray.maxSubArrayByDC(new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4}));
+        System.out.println(maximumSubarray.maxSubArrayByDC(new int[]{-2, -1}));
+        System.out.println(maximumSubarray.maxSubArrayByDC(new int[]{1, -3, 2}));
+        System.out.println(maximumSubarray.maxSubArrayByDC(new int[]{1, -1, -2, 2}));
     }
 
     public int maxSubArray(int[] nums) {
@@ -37,4 +41,32 @@ public class MaximumSubarray {
         return maxResult;
     }
 
+    public int maxSubArrayByDC(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        return findMaxSubArray(nums, 0, nums.length - 1);
+
+    }
+
+    private int findMaxSubArray(int[] nums, int from, int to) {
+        if (from == to) {
+            return nums[from];
+        }
+        int mid = from + (to - from) / 2;
+        int maxLeft = findMaxSubArray(nums, from, mid);
+        int maxRight = findMaxSubArray(nums, mid + 1, to);
+        int midMax = nums[mid];
+        //TODO 包含mid的最大值处理
+
+        
+
+        if (maxLeft >= maxRight && maxLeft >= midMax) {
+            return maxLeft;
+        } else if (maxRight > midMax) {
+            return maxRight;
+        } else {
+            return midMax;
+        }
+    }
 }
