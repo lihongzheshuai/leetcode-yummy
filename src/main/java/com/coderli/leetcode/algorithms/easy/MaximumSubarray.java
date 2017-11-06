@@ -56,11 +56,26 @@ public class MaximumSubarray {
         int mid = from + (to - from) / 2;
         int maxLeft = findMaxSubArray(nums, from, mid);
         int maxRight = findMaxSubArray(nums, mid + 1, to);
-        int midMax = nums[mid];
-        //TODO 包含mid的最大值处理
 
-        
+        int midLeftMax = nums[mid];
+        int midLeftTempSum = midLeftMax;
+        for (int i = mid -1; i >= from; i--) {
+            midLeftTempSum += nums[i];
+            if (midLeftMax < midLeftTempSum) {
+                midLeftMax = midLeftTempSum;
+            }
+        }
 
+        int midRightMax = nums[mid];
+        int midRightTempSum = midRightMax;
+        for (int i = mid + 1; i <= to; i++) {
+            midRightTempSum += nums[i];
+            if (midRightMax < midRightTempSum) {
+                midRightMax = midRightTempSum;
+            }
+        }
+
+        int midMax = midLeftMax + midRightMax - nums[mid];
         if (maxLeft >= maxRight && maxLeft >= midMax) {
             return maxLeft;
         } else if (maxRight > midMax) {
