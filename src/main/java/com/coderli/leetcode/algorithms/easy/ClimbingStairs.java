@@ -31,13 +31,35 @@ package com.coderli.leetcode.algorithms.easy;
 public class ClimbingStairs {
 
     public static void main(String[] args) {
+        String s = "a" + "b" + "c" + "d";
         ClimbingStairs climbingStairs = new ClimbingStairs();
-        System.out.println(climbingStairs.climbStairs(3));
-        System.out.println(climbingStairs.climbStairs(10));
+        System.out.println(climbingStairs.climbStairsWithRecursion(3));
+        System.out.println(climbingStairs.climbStairsWithRecursion(10));
+        System.out.println(climbingStairs.climbStairsWithRecursion(44));
+        System.out.println(climbingStairs.climbStairs(44));
+    }
+
+    public int climbStairsWithRecursion(int n) {
+        if (n == 1) {
+            return 1;
+        } else if (n == 2) {
+            return 2;
+        } else {
+            return climbStairsWithRecursion(n - 1) + climbStairsWithRecursion(n - 2);
+        }
     }
 
     public int climbStairs(int n) {
-        return 0;
+        if (n == 1) {
+            return 1;
+        }
+        int prev = 1;
+        int cur = 2;
+        for (int i = 3; i <= n; i++) {
+            int temp = cur;
+            cur += prev;
+            prev = temp;
+        }
+        return cur;
     }
-
 }
