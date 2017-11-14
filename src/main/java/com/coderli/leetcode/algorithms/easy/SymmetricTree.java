@@ -1,7 +1,5 @@
 package com.coderli.leetcode.algorithms.easy;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -30,27 +28,44 @@ public class SymmetricTree {
     public static void main(String[] args) {
         SymmetricTree symmetricTree = new SymmetricTree();
         SymmetricTree.TreeNode tree = symmetricTree.new TreeNode(1);
-        tree.left = symmetricTree.new TreeNode(2);
-        tree.right = symmetricTree.new TreeNode(2);
+        SymmetricTree.TreeNode subNodeLeft = symmetricTree.new TreeNode(2);
+        SymmetricTree.TreeNode subNodeRight = symmetricTree.new TreeNode(2);
+        subNodeLeft.left = symmetricTree.new TreeNode(3);
+        subNodeLeft.right = symmetricTree.new TreeNode(4);
+        subNodeRight.left = symmetricTree.new TreeNode(4);
+        subNodeRight.right = symmetricTree.new TreeNode(3);
+        tree.left = subNodeLeft;
+        tree.right = subNodeRight;
         System.out.println(symmetricTree.isSymmetric(tree));
     }
+
 
     public boolean isSymmetric(TreeNode root) {
         if (root == null) {
             return true;
         }
-        TreeNode leftSide = root.left;
-        TreeNode rightSide = root.right;
         Stack<TreeNode> leftStack = new Stack<>();
-        while (leftSide != null) {
-            leftStack.add(leftSide);
-            if (leftSide.left != null) {
+        Stack<TreeNode> rightStack = new Stack<>();
+        leftStack.push(root.left);
+        rightStack.push(root.right);
+        while (!leftStack.isEmpty() && !rightStack.isEmpty()) {
+            TreeNode leftSide = leftStack.pop();
+            TreeNode rightSide = rightStack.pop();
+            if (leftSide == null && rightSide == null) {
+                continue;
             }
+            if (leftSide == null || rightSide == null) {
+                return false;
+            }
+            if (leftSide.val != rightSide.val) {
+                return false;
+            }
+            leftStack.push(leftSide.right);
+            leftStack.push(leftSide.left);
+            rightStack.push(rightSide.left);
+            rightStack.push(rightSide.right);
         }
-
-        leftSide = leftSide.left;
-        rightSide = rightSide.right;
-        return false;
+        return leftStack.isEmpty() && rightStack.isEmpty();
     }
 
     // recursively
