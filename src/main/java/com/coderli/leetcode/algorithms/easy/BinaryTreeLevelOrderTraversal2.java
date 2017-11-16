@@ -1,6 +1,9 @@
 package com.coderli.leetcode.algorithms.easy;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * Given a binary tree, return the bottom-up level order traversal of its nodes' values. (ie, from left to right,
@@ -36,39 +39,60 @@ public class BinaryTreeLevelOrderTraversal2 {
         nineNode.left = fifteenNode;
         twentyNode.right = sevenNode;
         System.out.println(binaryTreeLevelOrderTraversal2.levelOrderBottom(tree));
+        System.out.println(binaryTreeLevelOrderTraversal2.levelOrderBottomWithRecursion(tree));
+    }
+
+    public List<List<Integer>> levelOrderBottomWithRecursion(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root != null) {
+            List<TreeNode> currentLevel = new ArrayList<>();
+            currentLevel.add(root);
+            scanNode(currentLevel, result);
+        }
+        return result;
+    }
+
+    private void scanNode(List<TreeNode> levelTreeNodes, List<List<Integer>> result) {
+        if (levelTreeNodes == null || levelTreeNodes.isEmpty()) {
+            return;
+        }
+        List<TreeNode> treeNodes = new ArrayList<>(levelTreeNodes.size() * 2);
+        List<Integer> valueList = new ArrayList<>(levelTreeNodes.size());
+        for (TreeNode node : levelTreeNodes) {
+            if (node.left != null) {
+                treeNodes.add(node.left);
+            }
+            if (node.right != null) {
+                treeNodes.add(node.right);
+            }
+            valueList.add(node.val);
+        }
+        scanNode(treeNodes, result);
+        result.add(valueList);
     }
 
     public List<List<Integer>> levelOrderBottom(TreeNode root) {
-        List<List<Integer>> result = new ArrayList<>();
+        LinkedList<List<Integer>> result = new LinkedList<>();
         if (root == null) {
             return result;
         }
         Queue<TreeNode> levelNodeQueue = new LinkedList<>();
         levelNodeQueue.add(root);
-        int levelCount = 1;
-        int nextLevelCount = 0;
-        List<Integer> levelList = new ArrayList<>();
         while (!levelNodeQueue.isEmpty()) {
-            TreeNode curNode = levelNodeQueue.poll();
-            levelList.add(curNode.val);
-            levelCount--;
-            if (curNode.left != null) {
-                levelNodeQueue.add(curNode.left);
-                nextLevelCount++;
+            int size = levelNodeQueue.size();
+            List<Integer> levelList = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                TreeNode curNode = levelNodeQueue.poll();
+                levelList.add(curNode.val);
+                if (curNode.left != null) {
+                    levelNodeQueue.add(curNode.left);
+                }
+                if (curNode.right != null) {
+                    levelNodeQueue.add(curNode.right);
+                }
             }
-            if (curNode.right != null) {
-                levelNodeQueue.add(curNode.right);
-                nextLevelCount++;
-            }
-            if (levelCount == 0) {
-                result.add(levelList);
-                levelList = new ArrayList<>();
-                levelCount = nextLevelCount;
-                nextLevelCount = 0;
-            }
-
+            result.addFirst(levelList);
         }
-        Collections.reverse(result);
         return result;
     }
 
