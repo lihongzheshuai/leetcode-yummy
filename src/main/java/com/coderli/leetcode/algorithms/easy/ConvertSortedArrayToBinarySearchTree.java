@@ -12,6 +12,7 @@ public class ConvertSortedArrayToBinarySearchTree {
         printTreeMidOrder(convert.sortedArrayToBST(new int[]{2, 3, 4, 5, 7, 8, 9}));
         printTreeMidOrder(convert.sortedArrayToBST(new int[]{0}));
         printTreeMidOrder(convert.sortedArrayToBST(new int[]{1, 3}));
+        printTreeMidOrder(convert.sortedArrayToBST(new int[]{-1,0, 1, 2}));
     }
 
     public TreeNode sortedArrayToBST(int[] nums) {
@@ -23,21 +24,21 @@ public class ConvertSortedArrayToBinarySearchTree {
         }
         int left = 0;
         int right = nums.length - 1;
-        int mid = left + (right - left) / 2;
-        TreeNode tree = new TreeNode(nums[mid]);
-        tree.left = sortedArrayToBST(left, mid - 1, nums, tree);
-        tree.right = sortedArrayToBST(mid + 1, right, nums, tree);
-        return tree;
+        return sortedArrayToBST(left, right, nums);
     }
 
-    private TreeNode sortedArrayToBST(int from, int to, int[] nums, TreeNode parent) {
-        if (from >= to) {
+    private TreeNode sortedArrayToBST(int from, int to, int[] nums) {
+        if (from == to) {
             return new TreeNode(nums[from]);
         }
         int mid = from + (to - from) / 2;
         TreeNode node = new TreeNode(nums[mid]);
-        node.left = sortedArrayToBST(from, mid - 1, nums, node);
-        node.right = sortedArrayToBST(mid + 1, to, nums, node);
+        if (mid > from) {
+            node.left = sortedArrayToBST(from, mid - 1, nums);
+        }
+        if (mid < to) {
+            node.right = sortedArrayToBST(mid + 1, to, nums);
+        }
         return node;
     }
 
