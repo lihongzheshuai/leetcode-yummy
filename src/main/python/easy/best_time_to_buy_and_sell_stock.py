@@ -15,6 +15,9 @@ Output: 0
 
 In this case, no transaction is done, i.e. max profit = 0.
 '''
+
+#author li.hzh
+
 class Solution:
     def maxProfit(self, prices):
         """
@@ -23,3 +26,18 @@ class Solution:
         """
         if prices is None or len(prices) <= 1:
             return 0
+        min_val = prices[0]
+        profit = 0
+        for index in range(1, len(prices)):
+            cur_val = prices[index]
+            if cur_val < min_val:
+                min_val = cur_val
+            cur_profit = cur_val - min_val
+            if cur_profit > profit:
+                profit = cur_profit
+        return profit
+
+
+print(Solution().maxProfit([7, 1, 5, 3, 6, 4]))
+print(Solution().maxProfit([7, 6, 4, 3, 1]))
+print(Solution().maxProfit([7, 6, 7, 3, 5]))
