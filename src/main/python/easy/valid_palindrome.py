@@ -36,6 +36,15 @@ class Solution:
                 end_index -= 1
         return True
 
+    def isPalindromeSimple(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        import re
+        s = re.sub(r'[^A-Za-z0-9]', '', s).lower()
+        return s == s[::-1]
+
 
 print(Solution().isPalindrome("A man, a plan, a canal: Panama"))
-print(Solution().isPalindrome("race a car"))
+print(Solution().isPalindromeSimple("race a car"))
