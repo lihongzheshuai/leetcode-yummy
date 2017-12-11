@@ -12,13 +12,14 @@ class Solution:
         :type nums: List[int]
         :rtype: int
         """
-        result = 0
+        once = twice = three_times = 0
         for val in nums:
-            result ^= val
-        for val in nums:
-            result ^= val
+            twice |= once & val
+            once ^= val
+            three_times = once & twice
+            once &= ~three_times
+            twice &= ~three_times
+        return once
 
-        return result
 
-
-print(Solution().singleNumber([1, 1, 1, 3, 3, 5, 3, 6, 6, 6]))
+print(Solution().singleNumber([1, 3, 1, 1, 3, 5, 3, 6, 6, 6]))
