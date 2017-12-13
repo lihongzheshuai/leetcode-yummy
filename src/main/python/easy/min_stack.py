@@ -24,7 +24,7 @@ class MinStack:
         """
         initialize your data structure here.
         """
-        _data = []
+        self._data = []
 
     def push(self, x):
         """
