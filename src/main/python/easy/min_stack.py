@@ -18,42 +18,46 @@
 
 class MinStack:
 
-    _data = []
+    __data = []
+    __min_list = []
 
     def __init__(self):
         """
         initialize your data structure here.
         """
-        self._data = []
+        self.__data = []
+        self.__min_list = []
 
     def push(self, x):
         """
         :type x: int
         :rtype: void
         """
-        self._data.append(x)
+        if not self.__data or x < self.__min_list[-1]:
+            self.__min_list.append(x)
+        else:
+            self.__min_list.append(self.__min_list[-1])
+        self.__data.append(x)
 
     def pop(self):
         """
         :rtype: void
         """
-        self._data.pop()
+        self.__data.pop()
+        self.__min_list.pop()
 
     def top(self):
         """
         :rtype: int
         """
-        return self._data[len(self._data) - 1]
+        return self.__data[-1]
 
     def getMin(self):
         """
         :rtype: int
         """
-        min = self._data[0]
-        for i in range(1, len(self._data)):
-            if self._data[i] < min:
-                min = self._data[i]
-        return min
+        return self.__min_list[-1]
+
 
 # Your MinStack object will be instantiated and called as such:
 obj = MinStack()
