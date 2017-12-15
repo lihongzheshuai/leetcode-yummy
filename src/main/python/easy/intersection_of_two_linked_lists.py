@@ -33,23 +33,43 @@ class Solution(object):
         """
         if not headA or not headB:
             return None
-        slow = fast = headA
-        is_headA = True
-        while fast is not None:
-            slow = slow.next
-            if faster.next is not None:
-                faster = faster.next.next
-            elif is_headA:
-                faster = headB
-                is_headA = False
-            else:
-                return None
-            if slow is faster:
-                break
-        if faster is None:
+        count_a = count_b = 1
+        point_a = headA
+        point_b = headB
+        while point_a.next is not None:
+            point_a = point_a.next
+            count_a += 1
+        while point_b.next is not None:
+            point_b = point_b.next
+            count_b += 1
+        sub_num = 0
+        long = short = None
+        if count_a >= count_b:
+            sub_num = count_a - count_b
+            long = headA
+            short = headB
+        else:
+            sub_num = count_b - count_a
+            long = headB
+            short = headA
+        for i in range(sub_num):
+            long = long.next
+        while long is not short:
+            long = long.next
+            short = short.next
+        return long
+
+    def getIntersectionNode_II(self, headA, headB):
+        """
+        :type head1, head1: ListNode
+        :rtype: ListNode
+        """
+        # 考虑一个有趣的事实，设链表A = a + c（公共部分），B = b + c(公共部分）
+        # 那么如果AB相接，到达c需要a + c + b步，同样BA相接，需要b + c + a 步，二者相等，因此有代码：
+        point_a, point_b = headA, headB
+        if not point_a or not point_b:
             return None
-        slow = headA
-        while slow is not faster:
-            slow = slow.next
-            faster = faster.next
-        return slow
+        while point_a is not point_b:
+            point_a = point_a.next if point_a is not None else headB
+            point_b = point_b.next if point_b is not None else headA
+        return point_a
