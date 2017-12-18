@@ -17,23 +17,11 @@ class Solution:
         :type n: int
         :rtype: str
         """
-        if n <= 26:
-            return chr(64 + n)
-        if n % 26 == 0:
-            result = "Z"
-            n //= 26
-            while n > 26:
-                result = "Z" + result
-                n //= 26
-            result = (chr(64 + n)) + result
-            return result
-        result, remainder = "", 0
+        remainder, result = 0, ""
         while n > 26:
-            remainder = n % 26
-            if remainder == 0:
-                remainder = 26
-            result = (chr(64 +  remainder)) + result
-            n = n // 26
+            remainder = (n - 1) % 26
+            n = (n - 1) // 26
+            result = (chr(65 + remainder)) + result
         result = (chr(64 + n)) + result
         return result
 
