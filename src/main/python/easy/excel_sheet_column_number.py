@@ -20,10 +20,8 @@ class Solution:
         :rtype: int
         """
         result = 0
-        power = 0
-        for index in range(len(s) - 1, -1, -1):
-            result += (ord(s[index]) - 64) * (26 ** power)
-            power += 1
+        for val in s:
+            result = result * 26 + ord(val) - 64
         return result
 
 
