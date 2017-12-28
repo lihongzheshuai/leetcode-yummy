@@ -10,10 +10,6 @@ class Solution:
     # @param n, an integer
     # @return an integer
     def reverseBits(self, n):
-        res = str(bin(n))
-        pad = (32 - len(res) + 2) * "0"
-        # print res
-        return int(res[0:2] + res[2:][::-1] + pad, 2)
         result = 0
         digits = 0
         while digits < 32:
