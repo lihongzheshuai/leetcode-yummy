@@ -77,28 +77,6 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
     result["资金剩余"] = funds_remaining
     result["资产需求未满足量"] = assets_reaming
     result["资金方支付"] = funds_pay
-    # 未进行二次分配的情况
-    # print("未进行二次分配时的结果")
-    # print(result)
-    # 开始进行二次分配, 二次分配采用一下最大满足策略，忽略最大出资比例
-    # for index in range(len(assets_reaming)):
-    #     for fund_index in relationsa2f[index]:
-    #         a_demand_remaind_count = assets_reaming[index]
-    #         if a_demand_remaind_count <= 0:
-    #             break
-    #         cur_fund_remaining_count = funds_remaining[fund_index]
-    #         cur_max_fund_pay = Decimal(cur_fund_remaining_count * get_real_ration(max_single_pay_ration, relationsf2a)).quantize(quantize)
-    #         if cur_fund_remaining_count <= 0:
-    #             continue
-    #         else:
-    #             match_count = Decimal(a_demand_remaind_count if a_demand_remaind_count <=  cur_max_fund_pay else cur_max_fund_pay)
-    #         funds_remaining[fund_index] -= match_count
-    #         assets_reaming[index] -= match_count
-    #         if dict(funds_pay[fund_index]).get(index) is None:
-    #             funds_pay[fund_index][index] = match_count
-    #         else:
-    #             funds_pay[fund_index][index] += match_count
-    # 二次分配后
     return result
 
 
