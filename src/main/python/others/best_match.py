@@ -123,12 +123,13 @@ def sort_assets(assets, relations_a2f, if_sort):
     return sorted_assets_map
 
 
-# auto
-# do_test(-1, False)
+# 排序后
+print("排序后分配")
 for i in range(1, 11):
     ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
     do_test(ratio, True, 10 ,5)
-
+# 未排序
+print("未排序分配")
 for i in range(1, 11):
     ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
     do_test(ratio, False, 3 ,4)
