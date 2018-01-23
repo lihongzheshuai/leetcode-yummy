@@ -36,7 +36,7 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
             # 关联资金数组
             a_relations = relationsa2f[index]
             # 份数
-            share_count = len(a_relations)
+            share_count = get_share_count(a_relations, funds_remaining)
             # 每份资金数
             if share_count != 0 and a_val > 0:
                 asset_per_demand[index] = (Decimal(a_val) / Decimal(share_count)).quantize(quantize)
@@ -107,7 +107,7 @@ def do_test(ratio, is_sort, iter_count, pay_all_count):
     detail_result[str(ratio)] = do_match(assets, funds, relationsa2f, relationsf2a, ratio, is_sort, iter_count,
                                          pay_all_count)
     print(detail_result)
-    return do_match(assets, funds, relationsa2f, relationsf2a, ratio, is_sort, iter_count, pay_all_count)
+    return detail_result
 
 
 import operator
@@ -122,12 +122,21 @@ def sort_assets(assets, relations_a2f, if_sort):
         sorted_assets_map = dict(sorted(rela_count_map.items(), key=operator.itemgetter(1)))
     return sorted_assets_map
 
-
+def get_share_count(relations_a2f, funds_remaining):
+    count = 0
+    for fund_idx in relations_a2f:
+        if funds_remaining[fund_idx] > 0:
+            count += 1
+    return count
 # 排序后
 print("排序后分配")
 for i in range(1, 11):
     ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
     do_test(ratio, True, 10 ,5)
+
+# 排序加自动
+print("排序后加自动计算分配比例")
+do_test(-1, True, 10 ,1)
 # 未排序
 print("未排序分配")
 for i in range(1, 11):
