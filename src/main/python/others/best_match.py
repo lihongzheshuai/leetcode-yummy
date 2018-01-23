@@ -4,7 +4,8 @@ from decimal import Decimal
 quantize = Decimal("0.00")
 
 
-def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, if_sort_asset):
+def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, if_sort_asset, iter_count,
+             pay_all_count):
     # 先检查关联关系
     if relationsa2f is None or len(relationsa2f) == 0:
         return []
@@ -23,12 +24,9 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
         assets_reaming[idx] = assets[idx]
     # 如果按照关联资金方升序排列
     sorted_assets = sort_assets(assets_reaming, relationsa2f, if_sort_asset)
-    need_continue = True
     # 可调参数
-    iter_count = 10
     while iter_count > 0:
         iter_count -= 1
-        need_continue = False
         # 遍历资产方（资金需求方），计算份数和每份资金数
         for index in sorted_assets.keys():
             # 需求资金
@@ -50,9 +48,9 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
                 cur_fund_val = funds_remaining[fund_index]
                 if cur_fund_val <= 0:
                     continue
-                need_continue = True
                 # 当前资金方单笔可支付最大金额
-                cur_max_count = (cur_fund_val * get_real_ration(max_single_pay_ration, relationsf2a[index])).quantize(
+                cur_max_count = (cur_fund_val * get_real_ration(max_single_pay_ration, relationsf2a[index],
+                                                                iter_count, pay_all_count)).quantize(
                     quantize)
                 # 定义Map保存付款映射关系
                 cur_pay_map = {} if funds_pay[fund_index] is None else funds_pay[fund_index]
@@ -81,7 +79,10 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
 
 
 # 计算实际的单笔最大支付比例
-def get_real_ration(max_ration, cur_fund2asset_relation):
+# pay_all_count = 5 几轮以上全部支付
+def get_real_ration(max_ration, cur_fund2asset_relation, iter_count, pay_all_count):
+    if iter_count >= pay_all_count:
+        return 1
     if max_ration > 0:
         return max_ration
     rela_count = len((cur_fund2asset_relation))
@@ -93,7 +94,7 @@ def get_real_ration(max_ration, cur_fund2asset_relation):
 
 # ration 最大单笔支付比例（0,1] 小于0代表按照资产关联份数自动调配
 # is_sort 是否按照关联资金数排序
-def do_test(ratio, is_sort):
+def do_test(ratio, is_sort, iter_count, pay_all_count):
     # 资产方定义。值代表拥有的资产数
     assets = [Decimal(10), Decimal(20), Decimal(30), Decimal(40)]
     # 资金方定义，值代表拥有的资金数
@@ -103,12 +104,12 @@ def do_test(ratio, is_sort):
     # 关联关系定义 从资金 -> 资产，a2f和f2a关系必须一致不能矛盾
     relationsf2a = [[0, 1], [1], [0, 1, 2]]
     detail_result = {}
-    detail_result[str(ratio)] = do_match(assets, funds, relationsa2f, relationsf2a, ratio, is_sort)
+    detail_result[str(ratio)] = do_match(assets, funds, relationsa2f, relationsf2a, ratio, is_sort, iter_count,
+                                         pay_all_count)
     print(detail_result)
-    return do_match(assets, funds, relationsa2f, relationsf2a, ratio, is_sort)
+    return do_match(assets, funds, relationsa2f, relationsf2a, ratio, is_sort, iter_count, pay_all_count)
 
 
-# TODO 排序资产方
 import operator
 
 
@@ -126,8 +127,8 @@ def sort_assets(assets, relations_a2f, if_sort):
 # do_test(-1, False)
 for i in range(1, 11):
     ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
-    do_test(ratio, True)
+    do_test(ratio, True, 10 ,5)
 
-# for i in range(1, 11):
-#     ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
-#     do_test(ratio, True)
+for i in range(1, 11):
+    ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
+    do_test(ratio, False, 3 ,4)
