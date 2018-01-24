@@ -35,16 +35,15 @@ print(match_result)
 print()
 
 ################### 用例3 ###################
-### 虽然资金无剩余，但是2号资产关联1，2，需求18，缺只满足了2。1号资金应更多向18倾斜。
 is_print_detail = True
 # 资产方定义。值代表拥有的资产数
-assets = [Decimal(120), Decimal(8), Decimal(18)]
+assets = [Decimal(18), Decimal(8), Decimal(120)]
 # 资金方定义，值代表拥有的资金数
 funds = [Decimal(10), Decimal(10), Decimal(20)]
 # 关联关系定义，从资产 -> 资金
-relationsa2f = [[0, 2], [0, 1, 2], [1, 2]]
+relationsa2f = [[0, 2], [0, 1, 2], [0, 2]]
 # 关联关系定义 从资金 -> 资产，a2f和f2a关系必须一致不能矛盾
-relationsf2a = [[0, 1], [1, 2], [0, 1, 2]]
+relationsf2a = [[0, 1, 2], [1], [0, 1, 2]]
 match_result = best_match.do_run(assets, funds, relationsa2f, relationsf2a, is_print_detail)
 print()
 print("用例【3】系统推荐方案")
