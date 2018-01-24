@@ -2,7 +2,8 @@ import best_match
 from decimal import Decimal
 
 ################### 用例1 ###################
-is_print_detail = True
+# 实际存在资金剩余2的分配方案
+is_print_detail = False
 # 资产方定义。值代表拥有的资产数
 assets = [Decimal(14), Decimal(8), Decimal(18)]
 # 资金方定义，值代表拥有的资金数
@@ -34,7 +35,8 @@ print(match_result)
 print()
 
 ################### 用例3 ###################
-is_print_detail = False
+### 虽然资金无剩余，但是2号资产关联1，2，需求18，缺只满足了2。1号资金应更多向18倾斜。
+is_print_detail = True
 # 资产方定义。值代表拥有的资产数
 assets = [Decimal(120), Decimal(8), Decimal(18)]
 # 资金方定义，值代表拥有的资金数
