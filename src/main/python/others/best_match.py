@@ -14,6 +14,8 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
     result = {}
     # 保存资金方付款记录映射数组+Map
     funds_pay = [None] * len(funds)
+    # 保存资产方获得资金数映射
+    assets_receive = [None] * len(assets)
     # 保存每个需求方，每份资金金额
     asset_per_demand = [None] * len(assets)
     # 保存实时资金方余额
@@ -29,6 +31,8 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
         iter_count -= 1
         # 遍历资产方（资金需求方），计算份数和每份资金数
         for index in sorted_assets.keys():
+            # 当前资产方获得资金映射map
+            cur_asset_receive_map = {} if assets_receive[index] is None else assets_receive[index]
             # 需求资金
             a_val = assets_reaming[index]
             if a_val <= 0:
@@ -64,6 +68,11 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
                 else:
                     # 小于限额，但是余额不足了。全部支付
                     cur_pay_count = cur_fund_val
+                # 保存手续结果到Map中
+                if cur_asset_receive_map.get(fund_index) is None:
+                    cur_asset_receive_map[fund_index] = cur_pay_count
+                else:
+                    cur_asset_receive_map[fund_index] += cur_pay_count
                 # 保存支付结果到Map中
                 if cur_pay_map.get(index) is None:
                     cur_pay_map[index] = cur_pay_count
@@ -72,9 +81,11 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
                 assets_reaming[index] -= cur_pay_count
                 funds_remaining[fund_index] -= cur_pay_count
                 funds_pay[fund_index] = cur_pay_map
+            assets_receive[index] = cur_asset_receive_map
     result["资金剩余"] = funds_remaining
     result["资产需求未满足量"] = assets_reaming
     result["资金方支付"] = funds_pay
+    result["资产方获得"] = assets_receive
     return result
 
 
@@ -117,60 +128,75 @@ def do_run(assets, funds, relationsa2f, relationsf2a, is_print_detail):
     score_map = {}
     result_list = []
     # 排序后
-    print("排序后分配")
+    if is_print_detail:
+        print("排序后分配")
     for i in range(1, 11):
         ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
-        result = do_match(assets, funds, relationsa2f, relationsf2a, ratio, True, 10, 10)
+        result = do_match(assets, funds, relationsa2f, relationsf2a, ratio, True, 10, 5)
         result_list.append(result)
         if is_print_detail:
             print("比例【" + ratio.to_eng_string() + "】, 排序【是】, 迭代【10-5】")
             print(result)
 
     # 排序加自动
-    print()
-    print("排序后加自动计算分配比例")
-    result = do_match(assets, funds, relationsa2f, relationsf2a, -1, True, 10, 10)
+    if is_print_detail:
+        print()
+        print("排序后加自动计算分配比例")
+    result = do_match(assets, funds, relationsa2f, relationsf2a, -1, True, 10, 5)
     result_list.append(result)
     if is_print_detail:
         print("比例【自动】, 排序【是】, 迭代【10-5】")
         print(result)
 
-    print()
-    print("不排序加自动计算分配比例")
-    result = do_match(assets, funds, relationsa2f, relationsf2a, -1, False, 10, 10)
+    if is_print_detail:
+        print()
+        print("不排序加自动计算分配比例")
+    result = do_match(assets, funds, relationsa2f, relationsf2a, -1, False, 10, 5)
     result_list.append(result)
     if is_print_detail:
         print("比例【自动】, 排序【否】, 迭代【10-5】")
         print(result)
 
     # 未排序
-    print()
-    print("未排序分配")
+    if is_print_detail:
+        print()
+        print("未排序分配")
     for i in range(1, 11):
         ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
-        result = do_match(assets, funds, relationsa2f, relationsf2a, ratio, False, 10, 10)
+        result = do_match(assets, funds, relationsa2f, relationsf2a, ratio, False, 10, 5)
         result_list.append(result)
         if is_print_detail:
             print("比例【" + ratio.to_eng_string() + "】, 排序【否】, 迭代【10-5】")
             print(result)
     # 推荐结果
-    return check_result(result_list, score_map, assets, funds, relationsa2f, relationsf2a)
+    return check_result(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail)
 
 
-def check_result(result_list, score_map, assets, funds, relationsa2f, relationsf2a):
-    score_pay_balance(result_list, score_map, assets, funds, relationsa2f, relationsf2a)
-    score_pay_remaining(result_list, score_map, assets, funds, relationsa2f, relationsf2a)
+def check_result(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail):
+    score_pay_balance(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail)
+    score_pay_remaining(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail)
     score_map_keys_list = list(score_map.keys())
     score_map_keys_list.sort()
     return result_list[score_map.get(score_map_keys_list[-1])[0]]
 
+
 # 基于支付平衡性打分
-def score_pay_balance(result_list, score_map, assets, funds, relationsa2f, relationsf2a):
+def score_pay_balance(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail):
     for result_idx in range(len(result_list)):
         result = result_list[result_idx]
         pay_list = list(result["资金方支付"])
         asset_unmap_remaining = dict(result["资产需求未满足量"])
-        result = {}
+        asset_receive_map_list = list(result["资产方获得"])
+        # 首先将资产方有关联却未获得投资的结果剔除
+        skip = False
+        for asset_idx in range(len(asset_receive_map_list)):
+            a_r_map = dict(asset_receive_map_list[asset_idx])
+            if (a_r_map is None or a_r_map) and not relationsa2f[asset_idx]:
+                skip = True
+                if is_print_detail:
+                    print("资产方【" + asset_idx + "】存在资金关联，但未获得资金")
+        if skip:
+            continue
         score = 0
         # 目前先检查是否每个资产方都得到满足，关联的越多得分越高
         for asset_idx in asset_unmap_remaining.keys():
@@ -187,25 +213,25 @@ def score_pay_balance(result_list, score_map, assets, funds, relationsa2f, relat
 
 
 # 基于资金剩余量打分
-def score_pay_remaining(result_list, score_map, assets, funds, relationsa2f, relationsf2a):
-    score_key_list = list(score_map.keys())
-    score_key_list.sort()
-    max_score = score_key_list[-1]
-    max_score_result_idx_list = score_map.get(max_score)
+def score_pay_remaining(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail):
     total_fund_volume = 0
     for fund_volume in funds:
         total_fund_volume += fund_volume
-    for r_idx in max_score_result_idx_list:
-        cur_score = max_score
-        cur_result = result_list[r_idx]
-        fund_remaining = cur_result["资金剩余"]
-        # 计算总剩余量，最少分最高。公式: (1 - 总剩余量/总量) * 100。因此分值很高，比重很大。
-        total_remaining_volume = 0
-        for f_r_volume in fund_remaining:
-            total_remaining_volume += f_r_volume
-        cur_score += (1- Decimal(total_remaining_volume/total_fund_volume).quantize(quantize)) * 100
-        # 保存分值和结果索引
-        if score_map.get(cur_score) is None:
-            score_map[cur_score] = [r_idx]
-        else:
-            score_map.get(cur_score).append(r_idx)
+    score_key_list = list(score_map.keys())
+    score_key_list.sort()
+    for score_key in score_key_list[::-1]:
+        score_result_idx_list = score_map.get(score_key)
+        for r_idx in score_result_idx_list:
+            cur_score = score_key
+            cur_result = result_list[r_idx]
+            fund_remaining = cur_result["资金剩余"]
+            # 计算总剩余量，最少分最高。公式: (1 - 总剩余量/总量) * 100。因此分值很高，比重很大。
+            total_remaining_volume = 0
+            for f_r_volume in fund_remaining:
+                total_remaining_volume += f_r_volume
+            cur_score += (1 - Decimal(total_remaining_volume / total_fund_volume).quantize(quantize)) * 100
+            # 保存分值和结果索引
+            if score_map.get(cur_score) is None:
+                score_map[cur_score] = [r_idx]
+            else:
+                score_map.get(cur_score).append(r_idx)
