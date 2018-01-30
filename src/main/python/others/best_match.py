@@ -110,6 +110,8 @@ def sort_assets(assets, relations_a2f, if_sort):
     sorted_assets_map = rela_count_map = {}
     for idx in range(len(relations_a2f)):
         rela_count_map[idx] = len(relations_a2f[idx])
+    for idx in range(len(relations_a2f)):
+        rela_count_map[idx] = len(relations_a2f[idx])
     sorted_assets_map = rela_count_map
     if if_sort:
         sorted_assets_map = dict(sorted(rela_count_map.items(), key=operator.itemgetter(1)))
@@ -132,7 +134,7 @@ def do_run(assets, funds, relationsa2f, relationsf2a, is_print_detail):
         print("排序后分配")
     for i in range(1, 11):
         ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
-        result = do_match(assets, funds, relationsa2f, relationsf2a, ratio, True, 100, 50)
+        result = do_match(assets, funds, relationsa2f, relationsf2a, ratio, True, 10, 5)
         result_list.append(result)
         if is_print_detail:
             print("比例【" + ratio.to_eng_string() + "】, 排序【是】, 迭代【10-5】")
@@ -142,7 +144,7 @@ def do_run(assets, funds, relationsa2f, relationsf2a, is_print_detail):
     if is_print_detail:
         print()
         print("排序后加自动计算分配比例")
-    result = do_match(assets, funds, relationsa2f, relationsf2a, -1, True, 100, 50)
+    result = do_match(assets, funds, relationsa2f, relationsf2a, -1, True, 10, 5)
     result_list.append(result)
     if is_print_detail:
         print("比例【自动】, 排序【是】, 迭代【10-5】")
@@ -151,7 +153,7 @@ def do_run(assets, funds, relationsa2f, relationsf2a, is_print_detail):
     if is_print_detail:
         print()
         print("不排序加自动计算分配比例")
-    result = do_match(assets, funds, relationsa2f, relationsf2a, -1, False, 100, 50)
+    result = do_match(assets, funds, relationsa2f, relationsf2a, -1, False, 10, 5)
     result_list.append(result)
     if is_print_detail:
         print("比例【自动】, 排序【否】, 迭代【10-5】")
@@ -163,7 +165,7 @@ def do_run(assets, funds, relationsa2f, relationsf2a, is_print_detail):
         print("未排序分配")
     for i in range(1, 11):
         ratio = Decimal(0.1 * i).quantize(Decimal("0.0"))
-        result = do_match(assets, funds, relationsa2f, relationsf2a, ratio, False, 100, 50)
+        result = do_match(assets, funds, relationsa2f, relationsf2a, ratio, False, 10, 5)
         result_list.append(result)
         if is_print_detail:
             print("比例【" + ratio.to_eng_string() + "】, 排序【否】, 迭代【10-5】")

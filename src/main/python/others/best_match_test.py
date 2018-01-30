@@ -37,7 +37,7 @@ print()
 ################### 用例3 ###################
 is_print_detail = True
 # 资产方定义。值代表拥有的资产数
-assets = [Decimal(18), Decimal(8), Decimal(120)]
+assets = [Decimal(120), Decimal(8), Decimal(18)]
 # 资金方定义，值代表拥有的资金数
 funds = [Decimal(10), Decimal(10), Decimal(20)]
 # 关联关系定义，从资产 -> 资金
