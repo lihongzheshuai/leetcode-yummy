@@ -15,6 +15,8 @@ for type_file in files:
         type_path = user_generate_path + "/" + type_file
         user_templ_count_map = {}
         for user_file in os.listdir(type_path):
+            if user_file == "optd":
+                continue
             print("cur_user:" + user_file)
             user_path = type_path + "/" + user_file
             if os.path.isdir(user_path):
@@ -48,8 +50,6 @@ for type_file in files:
 
                             # org_name
                             row_content[0] = user_file
-                            # template_type
-                            row_content[1] = type_file
                             # template_name
                             row_content[2] = templ_name
                             # file_name
@@ -57,12 +57,18 @@ for type_file in files:
                             # template_person_num
                             # tempalte_enterprise_num
                             person_num = enter_num = 0
+                            tpl_type = 1
                             if type_file == "PERSONAL":
-                                person_num = 1
+                                person_num = count
+                                tpl_type = 1
                             elif type_file == "ORGANIZATION":
-                                enter_num = 1
+                                enter_num = count
+                                tpl_type = 2
                             else:
-                                person_num = enter_num = 1
+                                person_num = enter_num = count
+                                tpl_type = 3
+                            # template_type
+                            row_content[1] = tpl_type
                             row_content[4] = person_num
                             row_content[5] = enter_num
                             # expext_num
