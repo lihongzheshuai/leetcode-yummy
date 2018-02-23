@@ -13,3 +13,11 @@ class Solution:
         :type nums: List[int]
         :rtype: int
         """
+        last = now = 0
+        for i in nums:
+            last, now = now, max(last + i, now)
+        return now
+
+
+solution = Solution()
+print(solution.rob([5, 3, 1, 10]))
