@@ -54,7 +54,7 @@ def do_match(assets, funds, relationsa2f, relationsf2a, max_single_pay_ration, i
                 if cur_fund_val <= 0:
                     continue
                 # 当前资金方单笔可支付最大金额
-                cur_max_count = (cur_fund_val * get_real_ration(max_single_pay_ration, relationsf2a[index],
+                cur_max_count = (cur_fund_val * get_real_ration(max_single_pay_ration, relationsf2a[fund_index],
                                                                 temp_count, pay_all_count)).quantize(quantize)
                 # 定义Map保存付款映射关系
                 cur_pay_map = {} if funds_pay[fund_index] is None else funds_pay[fund_index]
@@ -176,13 +176,13 @@ def do_run(assets, funds, relationsa2f, relationsf2a, is_print_detail):
 
 def check_result(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail):
     score_pay_balance(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail)
-    score_pay_remaining(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail)
-    score_map_keys_list = list(score_map.keys())
+    result_score_map = score_pay_remaining(result_list, score_map, assets, funds, relationsa2f, relationsf2a, is_print_detail)
+    score_map_keys_list = list(result_score_map.keys())
     if not score_map_keys_list:
         print("未找到合适方案。")
         return {}
     score_map_keys_list.sort()
-    return result_list[score_map.get(score_map_keys_list[-1])[0]]
+    return result_list[result_score_map.get(score_map_keys_list[-1])[0]]
 
 
 # 基于支付平衡性打分
@@ -236,7 +236,9 @@ def score_pay_remaining(result_list, score_map, assets, funds, relationsa2f, rel
                 total_remaining_volume += f_r_volume
             cur_score += (1 - Decimal(total_remaining_volume / total_fund_volume).quantize(quantize)) * 100
             # 保存分值和结果索引
-            if score_map.get(cur_score) is None:
-                score_map[cur_score] = [r_idx]
+            result_score_map = {}
+            if result_score_map.get(cur_score) is None:
+                result_score_map[cur_score] = [r_idx]
             else:
-                score_map.get(cur_score).append(r_idx)
+                result_score_map.get(cur_score).append(r_idx)
+    return result_score_map
