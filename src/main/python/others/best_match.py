@@ -224,6 +224,7 @@ def score_pay_remaining(result_list, score_map, assets, funds, relationsa2f, rel
         total_fund_volume += fund_volume
     score_key_list = list(score_map.keys())
     score_key_list.sort()
+    result_score_map = {}
     for score_key in score_key_list[::-1]:
         score_result_idx_list = score_map.get(score_key)
         for r_idx in score_result_idx_list:
@@ -236,7 +237,6 @@ def score_pay_remaining(result_list, score_map, assets, funds, relationsa2f, rel
                 total_remaining_volume += f_r_volume
             cur_score += (1 - Decimal(total_remaining_volume / total_fund_volume).quantize(quantize)) * 100
             # 保存分值和结果索引
-            result_score_map = {}
             if result_score_map.get(cur_score) is None:
                 result_score_map[cur_score] = [r_idx]
             else:
