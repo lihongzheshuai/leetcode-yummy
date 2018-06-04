@@ -36,19 +36,19 @@ class SolutionIteratively:
 
 # 递归法
 class SolutionRecursively:
-    def reverseTail(self, pre, cur):
-        if cur.next:
-            SolutionIteratively().reverseTail(cur, cur.next)
-        else:
-            cur.next = pre
-            return cur
+    def reverseTail(self, cur, pre=None):
+        if not cur:
+            return pre
+        temp_node = cur.next
+        cur.next = pre
+        return self.reverseTail(temp_node, cur)
 
     def reverseList(self, head):
         """
         :type head: ListNode
         :rtype: ListNode
         """
-        return SolutionRecursively.reverseTail(None, None, head)
+        return self.reverseTail(head)
 
 
 node_5 = ListNode(5)
@@ -65,5 +65,5 @@ solution = SolutionIteratively()
 result = solution.reverseList(node_1)
 print(result)
 
-result_rec = SolutionRecursively().reverseList(node_1)
+result_rec = SolutionRecursively().reverseList(node_5)
 print(result_rec)
